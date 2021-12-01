@@ -27,9 +27,9 @@ done
 # 3次失败报警
 if [ $ping_count1 -eq $ping_count2 ] && [ $ping_count2 -eq $ping_count3 ] && [ $ping_count3 -eq 0 ]
     then
-	echo -e "$1 is [ \033[31m down \033[0m ]"
+	echo -e "$1 is [\033[31mdown\033[0m]"
 else
-    echo -e "$1 is [ \033[32m up \033[0m ]"
+    echo -e "$1 is [\033[32mup\033[0m]"
 fi
 	
 #unset $ping_count1
