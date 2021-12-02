@@ -4,7 +4,7 @@
 
 [port_status.sh] 监控一个端口的存活状态
 
-[] 找出使用CPU|memory前十的进程
+[process_memory_use.sh] 找出使用CPU|memory前十的进程
 
 [memory_use.sh] 监控内存的使用率
 
