@@ -8,7 +8,7 @@
 
 [memory_use.sh] 监控内存的使用率
 
-[] 监控硬盘IO脚本
+[io_status.sh] 监控硬盘IO脚本
 
 [] lamp安装脚本
 
