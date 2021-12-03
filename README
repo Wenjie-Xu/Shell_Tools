@@ -10,6 +10,8 @@
 
 [io_status.sh] 监控硬盘IO脚本
 
+[nginx_install.sh] nginx安装脚本
+
 [] lamp安装脚本
 
 [] mysql binlog日志备份脚本，备份到备份服务器
