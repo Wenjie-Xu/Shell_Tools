@@ -40,6 +40,7 @@ install_pre() {
     # 2、切换源版本
     IS_ENABLE=`yum repolist all|grep -e "mysql$VERSION.*x86_64"|awk '{print $NF}'`
     if [[ $IS_ENABLE == 'disable' ]];then
+        # awk找到enable的那个，将它用命令disbale掉，在enable对应版本（$1为源名）
         echo 'hi'
     fi
 }
@@ -47,10 +48,16 @@ install_pre() {
 
 
 install() {
+    # 使用yum安装mysql
     echo 'hello'
+    # 检查是否有命令文件，有的话用systemd来重启、开启，关闭，list-units检查，否则报错检查
+    
 }
 
 test() {
+    # 1、开启服务，检查端口使用，NAME打开文件的确切名称
+    # 2、检测是否有配置文件，有的话，找到临时密码
+    # 创建临时文件，使用用户名和密码登录，看是否有user表
     echo 'hello'
 }
 
