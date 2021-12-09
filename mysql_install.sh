@@ -5,13 +5,12 @@
 VERSION=57
 SOFTWARE_DIR=/home/xuwenjie/Softwares
 MYSQL_DATADIR_DIR=/usr/local/mysql/data
-MYSQL_DATADIR="\/usr\/local\/mysql\/data"
 MYSQL_REPO="mysql80-community-release-el7-3.noarch.rpm"
 
 # functions
 check() {
     # 1、检测当前用户，要求为root
-    if [ ! $USER == 'root' ];then
+    if [ ! `whoami` == 'root' ];then
         echo -e '\033[31m[ERROR]\033[0m Need root to execute~'
         exit 1
     fi
@@ -79,15 +78,17 @@ install() {
         echo -e '\033[31m[ERROR]\033[0m Yum install fail,please check~'
         exit 1
     fi
-    echo -e '\033[32m[ERROR]\033[0m Yum install success'
+    echo -e '\033[32m[INFO]\033[0m Yum install success'
     # 检查是否有命令文件，用systemd来启停检查
     if [ -x `which mysql` ] && [ -f /etc/my.cnf ]
         then
         # 启动失败，修改配置
         if ! (systemctl restart mysqld &> /dev/null && systemctl status mysqld &> /dev/null && systemctl stop mysqld &> /dev/null);then
             # 修改配置文件
+            echo -e '\033[32m[INFO]\033[0m Start to config mysql data dir...'
             mkdir -p $MYSQL_DATADIR_DIR
-            if ! (sed -i.bnk -r "s/^(datadir).*/datadir=$MYSQL_DATADIR/" /etc/my.cnf);then echo -e '\033[31m[ERROR]\033[0m Mysql config error';exit 1;fi
+            if ! (sed -i.bnk -r "s/^(datadir).*/datadir=${MYSQL_DATADIR_DIR//\//\\/}/" /etc/my.cnf);then echo -e '\033[31m[ERROR]\033[0m Mysql config error';exit 1;fi
+            echo -e '\033[32m[INFO]\033[0m Config mysql data dir success'
         fi
         # 二次启动
         if (systemctl restart mysqld &> /dev/null && systemctl status mysqld &> /dev/null && systemctl stop mysqld &> /dev/null);then
@@ -112,5 +113,6 @@ test() {
 }
 
 # callback
-
+check
+install_pre
 install

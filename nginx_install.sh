@@ -18,9 +18,9 @@ nginx_group="www"
 # functions
 check() {
     # 检测当前用户，要求为root
-    if [ "$USER" != 'root' ];then
-	echo "需要root权限"
-	exit 1
+    if [ `whoami` != 'root' ];then
+		echo "需要root权限"
+		exit 1
     fi
     # 检查wget命令
     [ ! -x /usr/bin/wget ] && echo "没有找到命令：/usr/bin/wget" && exit 1
