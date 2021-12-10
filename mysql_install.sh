@@ -110,7 +110,7 @@ test() {
     NET_COUNT=`netstat -ntlp|grep mysqld|wc -l`
     if [ $NET_COUNT -lt 1 ];then
         ! (systemctl start mysqld 1> /dev/null ) && echo -e '\033[31m[ERROR]\033[0m Systemd start mysqld error!' && exit 1
-        NET_COUNT=netstat -ntlp|grep mysqld|wc -l
+        NET_COUNT=`netstat -ntlp|grep mysqld|wc -l`
     fi
     if [ $NET_COUNT -ge 1 ];then
         LISTEN_PORT=`netstat -ntlp|grep mysqld|awk '{print $4}'`
@@ -138,5 +138,5 @@ EOF
 # callback
 # check
 # install_pre
-# install
-test
+install
+# test
