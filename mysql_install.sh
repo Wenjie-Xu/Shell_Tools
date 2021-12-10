@@ -19,7 +19,7 @@ check() {
     [ ! -x /usr/bin/wget ] && echo -e '\033[31m[ERROR]\033[0m Not find command /usr/bin/wget' && exit 1
 
     # 3、安装依赖
-    if ! (yum -y install gcc-* pcre-devel zlib-devel elinks yum-utils 1> /dev/null);then
+    if ! (yum -y install gcc-* pcre-devel zlib-devel yum-utils sysstat 1> /dev/null);then
 	    echo "ERROR: yum install error"
 	    exit 1
     fi
@@ -106,13 +106,37 @@ install() {
 }
 
 test() {
-    # 1、开启服务，检查端口使用，NAME打开文件的确切名称
-    # 2、检测是否有配置文件，有的话，找到临时密码
-    # 创建临时文件，使用用户名和密码登录，看是否有user表
-    echo 'hello'
+    # 1、开启服务，检查tcp端口使用
+    NET_COUNT=`netstat -ntlp|grep mysqld|wc -l`
+    if [ $NET_COUNT -lt 1 ];then
+        ! (systemctl start mysqld 1> /dev/null ) && echo -e '\033[31m[ERROR]\033[0m Systemd start mysqld error!' && exit 1
+        NET_COUNT=netstat -ntlp|grep mysqld|wc -l
+    fi
+    if [ $NET_COUNT -ge 1 ];then
+        LISTEN_PORT=`netstat -ntlp|grep mysqld|awk '{print $4}'`
+        echo -e "\033[32m[TEST]\033[0m Mysqld tcp6 port is listening, portid:$LISTEN_PORT"
+        # 找到临时密码，登陆测试
+        TEMP_FILE=`mktemp mysql_temp.XXX`
+        TEMP_PASSWD=`grep 'temporary password' /var/log/mysqld.log|awk 'END{print $NF}'`
+        (mysql -h 127.0.0.1 -u root -p"$TEMP_PASSWD" << EOF
+        exit;
+EOF
+        ) &> $TEMP_FILE
+        if ! (grep 'ERROR' $TEMP_FILE &> /dev/null);then
+            echo -e "\033[32m[TEST]\033[0m Mysqld start success!"
+            rm -f $TEMP_FILE
+            read -p "close mysqld ? Y/N : " CLOSE_MYSQL
+            [[ $CLOSE_MYSQL == 'Y' ]] && systemctl stop mysqld 1> /dev/null && echo 'Bye~'
+        else
+            echo -e '\033[31m[ERROR]\033[0m Login error,please check';exit 1
+        fi
+    else
+        echo -e '\033[31m[ERROR]\033[0m Unknow start error,please check';exit 1
+    fi
 }
 
 # callback
-check
-install_pre
-install
+# check
+# install_pre
+# install
+test
