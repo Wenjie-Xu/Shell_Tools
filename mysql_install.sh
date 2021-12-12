@@ -139,4 +139,4 @@ EOF
 # check
 # install_pre
 install
-# test
+test

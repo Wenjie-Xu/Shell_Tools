@@ -14,7 +14,7 @@
 
 [mysql_install.sh] mysql安装脚本
 
-[] mysql binlog日志备份脚本，备份到备份服务器
+[mysql_backup.sh] mysql binlog日志备份脚本，备份到备份服务器
 
 [] 新建user01-user20用户，要求密码是随机6位数，
   密码取值范围a-Z0-9，不能是单一类型
