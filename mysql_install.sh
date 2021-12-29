@@ -83,7 +83,7 @@ install() {
     if [ -x `which mysql` ] && [ -f /etc/my.cnf ]
         then
         # 启动失败，修改配置
-        if ! (systemctl restart mysqld &> /dev/null && systemctl status mysqld &> /dev/null && systemctl stop mysqld &> /dev/null);then
+        if ! (systemctl restart mysqld &> /dev/null && systemctl start mysqld &> /dev/null && systemctl stop mysqld &> /dev/null);then
             # 修改配置文件
             echo -e '\033[32m[INFO]\033[0m Start to config mysql data dir...'
             mkdir -p $MYSQL_DATADIR_DIR
@@ -91,7 +91,7 @@ install() {
             echo -e '\033[32m[INFO]\033[0m Config mysql data dir success'
         fi
         # 二次启动
-        if (systemctl restart mysqld &> /dev/null && systemctl status mysqld &> /dev/null && systemctl stop mysqld &> /dev/null);then
+        if (systemctl restart mysqld &> /dev/null && systemctl start mysqld &> /dev/null && systemctl stop mysqld &> /dev/null);then
             # systemd启动
             TEMP_PASSWD=`grep 'temporary password' /var/log/mysqld.log|awk 'END{print $NF}'`
             echo -e "\033[32m[INFO]\033[0m Mysql install and start success!"

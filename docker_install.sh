@@ -32,14 +32,33 @@ install_pre() {
 
 install() {
     # 使用yum安装docker
-    echo 1
+    echo -e "\033[32m[INFO]\033[0m Strat to install docker..."
+    if ! (yum -y install docker-ce docker-ce-cli containerd.io 1> /dev/null);then
+        echo -e '\033[31m[ERROR]\033[0m Yum install fail,please check~'
+        exit 1
+    fi
+    echo -e '\033[32m[INFO]\033[0m Yum install success'
 }
 
 test() {
-    # 使用systemctl进行启动测试
-    # 检查docker版本号
-    echo 1
+    # 检查是否有命令文件，用systemd来启停检查
+    if [ -x `which docker` ]
+        then
+        PROCESS_COUNTS=`ps -ef | grep docker | wc -l`
+        if [ $PROCESS_COUNTS -eq 1 ];then
+            if (systemctl restart docker &> /dev/null && systemctl start docker &> /dev/null && systemctl stop docker &> /dev/null);then
+                # systemd启动
+                echo -e "\033[32m[INFO]\033[0m Docker install and start success!"
+            else
+                echo -e '\033[31m[ERROR]\033[0m Unknow docker start error,please check' && exit 1
+            fi
+        else
+            echo -e "\033[32m[INFO]\033[0m Docker is running"
+        fi
+    else
+        echo -e '\033[31m[ERROR]\033[0m Cant find docker file,please check';exit 1
+    fi
 }
 
 # callback
-install_pre
+test
