@@ -14,6 +14,8 @@
 
 [mysql_install.sh] mysql安装脚本
 
+[docker_install.sh] docker安装脚本
+
 [mysql_backup.sh] mysql binlog日志备份脚本，备份到备份服务器
 
 [add_users.sh] 新建user01-user20用户，要求密码是随机6位数，
